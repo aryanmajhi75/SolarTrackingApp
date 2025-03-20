@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "531789100006",
+    "firebase_url": "https://solarproject-19ecb-default-rtdb.firebaseio.com",
+    "project_id": "solarproject-19ecb",
+    "storage_bucket": "solarproject-19ecb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531789100006:android:446077101274c6e25c5c27",
+        "android_client_info": {
+          "package_name": "com.example.solar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxegHmuWr670Ht09n35xvSzGUpyoCulsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
