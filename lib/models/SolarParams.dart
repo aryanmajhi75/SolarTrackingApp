@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 class SolarParams {
   double temperature;
   String time;
@@ -36,12 +38,22 @@ class SolarParams {
   // Method to convert a JSON string to a SolarParams object
   static SolarParams fromJsonString(String jsonString) {
     final Map<String, dynamic> jsonData = json.decode(jsonString);
+
+    if(kDebugMode) {
+      print('JSON Data: $jsonData');
+    }
+
     return SolarParams.fromJson(jsonData);
   }
 
   // Method to convert a SolarParams object to a JSON string
   String toJsonString() {
     final Map<String, dynamic> jsonData = toJson();
+
+    if(kDebugMode) {
+      print('JSON Data: $jsonData');
+    }
+
     return json.encode(jsonData);
   }
 }

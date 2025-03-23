@@ -1,5 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert'; // Import JSON encoding
 import '../models/DateWiseParams.dart';
 import '../models/SolarParams.dart';
 
@@ -8,46 +10,69 @@ Future<List<DateWiseParams>> getSolarParams() async {
   List<DateWiseParams> allParams = [];
 
   try {
-    // Get the reference to SolarData
+    // Get reference to SolarData
     DatabaseReference solarDataRef = database.child('SolarData');
 
-    // Get all dates
+    // Fetch data
     DataSnapshot dateSnapshot = await solarDataRef.get();
 
-    if (dateSnapshot.value != null) {
+    if (dateSnapshot.value != null && dateSnapshot.value is Map<dynamic, dynamic>) {
       Map<dynamic, dynamic> dates = dateSnapshot.value as Map<dynamic, dynamic>;
 
-      // Iterate through each date
       dates.forEach((dateKey, dateData) {
-        List<SolarParams> paramsForDate = [];
+        if (dateData is Map<dynamic, dynamic>) {
+          List<SolarParams> paramsForDate = [];
 
-        // Convert the date data to Map
-        Map<dynamic, dynamic> docData = dateData as Map<dynamic, dynamic>;
+          dateData.forEach((docId, content) {
+            if (content is Map) {
+              try {
+                SolarParams param = SolarParams(
+                  temperature: (content['temperature'] ?? 0.0).toDouble(),
+                  time: content['time']?.toString() ?? '',
+                  humidity: (content['humidity'] ?? 0.0).toDouble(),
+                  voltage: (content['voltage'] ?? 0.0).toDouble(),
+                );
+                paramsForDate.add(param);
+              } catch (e) {
+                if (kDebugMode) {
+                  print("Error parsing SolarParams for $docId: $e");
+                }
+              }
+            }
+          });
 
-        // Iterate through each document in the date
-        docData.forEach((docId, content) {
-          // Convert the content to SolarParams
-          if (content is Map) {
-            SolarParams param = SolarParams(
-              temperature: (content['temperature'] ?? 0.0).toDouble(),
-              time: content['time']?.toString() ?? '',
-              humidity: (content['humidity'] ?? 0.0).toDouble(),
-              voltage: (content['voltage'] ?? 0.0).toDouble(),
-            );
-            paramsForDate.add(param);
+          if (paramsForDate.isNotEmpty) {
+            try {
+              DateTime date = DateFormat('dd-MM-yyyy').parse(dateKey);
+              DateWiseParams dateWiseParam = DateWiseParams(
+                date: date.toIso8601String(), // Use ISO format for consistency
+                params: paramsForDate,
+              );
+              allParams.add(dateWiseParam);
+            } catch (e) {
+              if (kDebugMode) {
+                print("Error parsing date for $dateKey: $e");
+              }
+            }
           }
-        });
-
-        // Create DateWiseParams for this date
-        if (paramsForDate.isNotEmpty) {
-          DateTime date = DateTime.parse(dateKey);
-          DateWiseParams dateWiseParam = DateWiseParams(
-            date: date,
-            params: paramsForDate,
-          );
-          allParams.add(dateWiseParam);
         }
       });
+    }
+
+    // Sort allParams by date and time
+    allParams.sort((a, b) {
+      DateTime dateA = DateTime.parse(a.date);
+      DateTime dateB = DateTime.parse(b.date);
+      if (dateA != dateB) {
+        return dateA.compareTo(dateB);
+      } else {
+        return a.params.first.time.compareTo(b.params.first.time);
+      }
+    });
+
+    if (kDebugMode) {
+      // Use JSON encoding for better readability
+      print("AllParams JSON:\n${JsonEncoder.withIndent('  ').convert(allParams.map((param) => param.toJson()).toList())}");
     }
 
     return allParams;
