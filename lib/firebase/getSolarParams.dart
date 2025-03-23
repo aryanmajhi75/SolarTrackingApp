@@ -11,7 +11,7 @@ Future<List<DateWiseParams>> getSolarParams() async {
 
   try {
     // Get reference to SolarData
-    DatabaseReference solarDataRef = database.child('SolarData');
+    Query solarDataRef = database.child('SolarData');
 
     // Fetch data
     DataSnapshot dateSnapshot = await solarDataRef.get();
@@ -59,14 +59,14 @@ Future<List<DateWiseParams>> getSolarParams() async {
       });
     }
 
-    // Sort allParams by date and time
+    // Sort allParams by date and time in descending order
     allParams.sort((a, b) {
       DateTime dateA = DateTime.parse(a.date);
       DateTime dateB = DateTime.parse(b.date);
       if (dateA != dateB) {
-        return dateA.compareTo(dateB);
+        return dateB.compareTo(dateA);
       } else {
-        return a.params.first.time.compareTo(b.params.first.time);
+        return b.params.first.time.compareTo(a.params.first.time);
       }
     });
 

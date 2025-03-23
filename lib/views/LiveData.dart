@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
@@ -33,6 +34,9 @@ class _LiveDataState extends State<LiveData> {
               if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 final firstData = snapshot.data!.first;
                 final allData = snapshot.data!;
+
+                // Sort the params of firstData by time in descending order
+                firstData.params.sort((a, b) => b.time.compareTo(a.time));
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,8 +115,8 @@ class _LiveDataState extends State<LiveData> {
                           itemCount: allData.length,
                           itemBuilder: (context, index) {
                             final data = allData[index];
-                            // Sort the params by time
-                            data.params.sort((a, b) => a.time.compareTo(b.time));
+                            // Sort the params by time in descending order
+                            data.params.sort((a, b) => b.time.compareTo(a.time));
                             return ListTile(
                               title: Text(
                                 "Date: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(data.date))}",

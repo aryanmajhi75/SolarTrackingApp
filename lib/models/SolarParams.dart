@@ -25,7 +25,6 @@ class SolarParams {
     );
   }
 
-  // Method to convert a SolarParams object to a JSON map
   Map<String, dynamic> toJson() {
     return {
       'temperature': temperature,
@@ -35,7 +34,6 @@ class SolarParams {
     };
   }
 
-  // Method to convert a JSON string to a SolarParams object
   static SolarParams fromJsonString(String jsonString) {
     final Map<String, dynamic> jsonData = json.decode(jsonString);
 
@@ -46,7 +44,6 @@ class SolarParams {
     return SolarParams.fromJson(jsonData);
   }
 
-  // Method to convert a SolarParams object to a JSON string
   String toJsonString() {
     final Map<String, dynamic> jsonData = toJson();
 
