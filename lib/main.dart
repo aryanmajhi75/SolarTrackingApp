@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:solar/firebase_options.dart';
+import 'package:solar/providers/user_provider.dart';
 import 'package:solar/themes/textTheme.dart';
-import 'package:solar/views/Navbar.dart';
+import 'package:solar/views/Login.dart';
 
 void main() async {
 
@@ -12,7 +14,14 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -23,12 +32,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Solar Tracking App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
+        primarySwatch: Colors.green,
         textTheme: AppTextTheme.textTheme,
       ),
-      home: Navbar(),
+      home: Login(),
     );
   }
 }

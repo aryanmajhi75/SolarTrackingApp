@@ -41,6 +41,7 @@ dependencies:
   firebase_database:
   intl:
   syncfusion_flutter_charts:
+  provider:
 
 dev_dependencies:
   flutter_test:
